@@ -1,0 +1,231 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tareas</title>
+</head>
+<style>
+    body {
+        font-family: Arial, sans-serif;
+        max-width: 600px;
+        margin: 30px auto;
+        padding: 0 15px;
+        background-color: #f4f4f4;
+        color: #333;
+    }
+
+    h1 {
+        text-align: center;
+    }
+
+    input, select, button {
+        padding: 6px;
+        font-size: 14px;
+    }
+
+    #task-input {
+        width: 55%;
+    }
+
+    button {
+        cursor: pointer;
+        background-color: #16804e;
+        color: white;
+        border: none;
+        border-radius: 3px;
+    }
+
+    button:hover {
+        background-color: #326e50;
+    }
+
+    .controls {
+        margin-bottom: 15px;
+    }
+
+    #search-input {
+        width: 50%;
+    }
+
+    ul {
+        list-style: none;
+        padding: 0;
+    }
+
+    li {
+    background-color: white;
+    border: 1px solid #ccc;
+    margin-bottom: 8px;
+    padding: 10px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    }
+
+    li button {
+        background-color: #d9534f;
+        margin-left: 10px;
+    }
+
+    li button:hover {
+        background-color: #b52b27;
+    }
+</style>
+<body>
+    <h1>Lista de tareas</h1>
+   <form id="task-form">
+        <div class="form-group">
+            <input type="text" id="task-input" placeholder="Escribe una tarea..." required>
+            <select id="priority-input">
+                <option value="baja">Baja</option>
+                <option value="media" selected>Media</option>
+                <option value="alta">Alta</option>
+            </select>
+            <button type="submit">Añadir Tarea</button>
+        </div>
+    </form>
+
+    <hr>
+
+    <!-- Controles de filtrado y ordenación -->
+    <div class="controls">
+        <input type="text" id="search-input" placeholder="Buscar tarea...">
+        
+        <select id="sort-select">
+            <option value="fecha-desc">Más recientes primero</option>
+            <option value="nombre-asc">Nombre (A-Z)</option>
+            <option value="prioridad-desc">Prioridad (Alta a Baja)</option>
+        </select>
+    </div>
+
+    <!-- Listado de tareas -->
+    <ul id="task-list"></ul>
+    <script>
+    // ===== Referencias al DOM =====
+    const form = document.getElementById('task-form');
+    const taskInput = document.getElementById('task-input');
+    const priorityInput = document.getElementById('priority-input');
+    const searchInput = document.getElementById('search-input');
+    const sortSelect = document.getElementById('sort-select');
+    const taskList = document.getElementById('task-list');
+
+    const STORAGE_KEY = 'tareas';
+    const pesoPrioridad = { baja: 1, media: 2, alta: 3 };
+
+    // ===== Persistencia en localStorage =====
+    function cargarTareas() {
+        const datos = localStorage.getItem(STORAGE_KEY);
+        return datos ? JSON.parse(datos) : [];
+    }
+
+    function guardarTareas() {
+        localStorage.setItem(STORAGE_KEY, JSON.stringify(tareas));
+    }
+
+    let tareas = cargarTareas();
+
+    // ===== Crear tarea =====
+    form.addEventListener('submit', (e) => {
+        e.preventDefault();
+
+        const texto = taskInput.value.trim();
+        if (texto === '') return;
+
+        const nuevaTarea = {
+            id: Date.now(),
+            texto: texto,
+            prioridad: priorityInput.value,
+            fecha: new Date().toISOString()
+        };
+
+        tareas.push(nuevaTarea);
+        guardarTareas();
+        mostrarTareas();
+
+        form.reset();
+        priorityInput.value = 'media';
+        taskInput.focus();
+    });
+
+    // ===== Eliminar tarea =====
+    function eliminarTarea(id) {
+        tareas = tareas.filter(t => t.id !== id);
+        guardarTareas();
+        mostrarTareas();
+    }
+
+    // ===== Filtrar y ordenar =====
+    function obtenerTareasVisibles() {
+        const busqueda = searchInput.value.trim().toLowerCase();
+
+        // Filtrar por texto de búsqueda (también busca en la prioridad)
+        let resultado = tareas.filter(t =>
+            t.texto.toLowerCase().includes(busqueda) ||
+            t.prioridad.toLowerCase().includes(busqueda)
+        );
+
+        // Ordenar según el select
+        switch (sortSelect.value) {
+            case 'nombre-asc':
+                resultado.sort((a, b) => a.texto.localeCompare(b.texto, 'es', { sensitivity: 'base' }));
+                break;
+            case 'prioridad-desc':
+                resultado.sort((a, b) => pesoPrioridad[b.prioridad] - pesoPrioridad[a.prioridad]);
+                break;
+            case 'fecha-desc':
+            default:
+                resultado.sort((a, b) => new Date(b.fecha) - new Date(a.fecha));
+                break;
+        }
+
+        return resultado;
+    }
+
+    // ===== Pintar el listado =====
+    function mostrarTareas() {
+        taskList.innerHTML = '';
+
+        const visibles = obtenerTareasVisibles();
+
+        if (visibles.length === 0) {
+            const vacio = document.createElement('li');
+            vacio.textContent = 'No hay tareas para mostrar.';
+            taskList.appendChild(vacio);
+            return;
+        }
+
+        visibles.forEach(tarea => {
+            const li = document.createElement('li');
+
+            const fechaFormateada = new Date(tarea.fecha).toLocaleString('es-ES', {
+                day: '2-digit',
+                month: '2-digit',
+                year: 'numeric',
+                hour: '2-digit',
+                minute: '2-digit'
+            });
+
+            const span = document.createElement('span');
+            span.textContent = `${tarea.texto} — Prioridad: ${tarea.prioridad} — ${fechaFormateada} `;
+
+            const btnEliminar = document.createElement('button');
+            btnEliminar.textContent = 'Eliminar';
+            btnEliminar.addEventListener('click', () => eliminarTarea(tarea.id));
+
+            li.appendChild(span);
+            li.appendChild(btnEliminar);
+            taskList.appendChild(li);
+        });
+    }
+
+    // ===== Eventos de búsqueda y ordenación =====
+    searchInput.addEventListener('input', mostrarTareas);
+    sortSelect.addEventListener('change', mostrarTareas);
+
+    // ===== Carga inicial =====
+    mostrarTareas();
+</script>
+       
+</body>
+</html>
