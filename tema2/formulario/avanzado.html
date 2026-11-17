@@ -1,0 +1,44 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+  </head>
+  <style>
+    input:user-invalid {
+      color: rgb(122, 62, 62);
+    }
+    input:user-valid {
+      color: rgb(136, 202, 136);
+    }
+  </style>
+  <body>
+    <form action="">
+      <p>
+        <label for="pass">Elige contraseña</label>
+        <input type="text" name="pass1" id="pass1" required minlength="3" />
+      </p>
+      <p>
+        <label for="pass">Repite contraseña</label>
+        <input type="text" name="pass2" id="pass2" />
+      </p>
+      <p>
+        <button type="submit">Enviar</button>
+      </p>
+    </form>
+    <script>
+      const inputPass1 = document.getElementById("pass1");
+      const inputPass2 = document.getElementById("pass2");
+      function checkPasswords() {
+        if (inputPass1.value == inputPass2.value) {
+          inputPass2.setCustomValidity("")
+        } else {
+          inputPass2.setCustomValidity("No coincide la contraseña")
+        }
+      }
+      inputPass1.addEventListener("input", checkPasswords);
+      inputPass2.addEventListener("input", checkPasswords);
+    </script>
+  </body>
+</html>
