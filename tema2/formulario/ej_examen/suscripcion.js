@@ -7,7 +7,6 @@ document.addEventListener("DOMContentLoaded", () => {
     const errTipo = document.querySelector("#fsTipo .error");
     const errTemas = document.querySelector("#fsTemas .error");
 
-    // Precios y nº de temas exigidos por tipo (Élite = todos)
     const PRECIOS = { basico: 5, estandar: 10, premium: 15, elite: 20 };
     const NUM_TEMAS = {
         basico: 1,
@@ -22,7 +21,6 @@ document.addEventListener("DOMContentLoaded", () => {
         elite: "Élite"
     };
 
-    //  Utilidades 
     const tipoActual = () =>
         document.querySelector('input[name="tipo"]:checked');
     const checksTemas = () =>
@@ -32,7 +30,6 @@ document.addEventListener("DOMContentLoaded", () => {
     const setError = (elemento, msg) => { elemento.textContent = msg; };
     const errorDe = (input) => input.parentElement.querySelector(".error");
 
-    //  4. Insertar los temas de temas.js 
     function crearTemas() {
         TEMAS.forEach((tema, i) => {
             const input = document.createElement("input");
@@ -49,25 +46,21 @@ document.addEventListener("DOMContentLoaded", () => {
         });
     }
 
-    //  3. Precio según el tipo 
     function actualizarPrecio() {
         const t = tipoActual();
         precio.textContent = t ? PRECIOS[t.value] + " €" : "";
     }
 
-    // Élite: todos marcados por defecto. Otros tipos: se desmarcan para elegir.
     function ajustarTemasPorTipo() {
         const esElite = tipoActual().value === "elite";
         checksTemas().forEach(c => (c.checked = esElite));
         setError(errTemas, "");
     }
 
-    //  1. Nombre en mayúsculas 
     nombre.addEventListener("input", () => {
         nombre.value = nombre.value.toUpperCase();
     });
 
-    //  Validaciones 
     function validarNombre() {
         nombre.value = nombre.value.trim().toUpperCase();
         if (nombre.value.length < 3) {
@@ -112,8 +105,8 @@ document.addEventListener("DOMContentLoaded", () => {
         const n = marcados().length;
         if (n !== requeridos) {
             const msg = t.value === "elite"
-                ? `La suscripción Élite requiere todos los temas (${requeridos}). Has marcado ${n}.`
-                : `La suscripción ${NOMBRES[t.value]} requiere exactamente ${requeridos} tema${requeridos > 1 ? "s" : ""}. Has marcado ${n}.`;
+                ? `La suscripción Élite te da derecho de eleguir todos los temas (${requeridos}). Tienes marcado ${n}.`
+                : `La suscripción ${NOMBRES[t.value]} te da derecho a ${requeridos} tema${requeridos > 1 ? "s" : ""}. Tienes marcado ${n}.`;
             setError(errTemas, msg);
             return false;
         }
@@ -121,7 +114,6 @@ document.addEventListener("DOMContentLoaded", () => {
         return true;
     }
 
-    //  Eventos 
     document.querySelectorAll('input[name="tipo"]').forEach(r =>
         r.addEventListener("change", () => {
             actualizarPrecio();
@@ -131,26 +123,18 @@ document.addEventListener("DOMContentLoaded", () => {
 
     contenedor.addEventListener("change", validarTemas);
 
-/*     form.addEventListener("submit", (e) => {
-        // Evalua todo para mostrar los errores a la vez
+    form.addEventListener("submit", (e) => {
         const resultados = [validarNombre(), validarDni(), validarTipo(), validarTemas()];
         if (resultados.includes(false)) {
             e.preventDefault();
-        }
-    }); */
-    form.addEventListener("submit", (e) => {
-    const resultados = [validarNombre(), validarDni(), validarTipo(), validarTemas()];
-        if (resultados.includes(false)) {
-            e.preventDefault();
         } else {
-            e.preventDefault(); // SOLO PARA PRUEBAS: quitar al entregar
+            e.preventDefault();
             console.log(Object.fromEntries(new FormData(form)));
             alert("Formulario válido");
         }
-        });
+    });
 
     form.addEventListener("reset", () => {
-        // El reset restaura los valores tras este evento, por eso el setTimeout
         setTimeout(() => {
             document.querySelectorAll(".error").forEach(s => (s.textContent = ""));
             actualizarPrecio();
@@ -158,8 +142,7 @@ document.addEventListener("DOMContentLoaded", () => {
         }, 0);
     });
 
-    // ---------- Inicialización ----------
     crearTemas();
-    actualizarPrecio();   // Básico por defecto (checked en el HTML)
+    actualizarPrecio();
     ajustarTemasPorTipo();
 });
