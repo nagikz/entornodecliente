@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <title>Inscripción Gimnasio</title>
+</head>
+<body>
+  <h1>Inscripción al gimnasio</h1>
+
+  <form id="formulario" action="#" method="get" novalidate>
+    <div>
+      <label for="nombre">Nombre completo:</label>
+      <input type="text" id="nombre" name="nombre">
+      <span class="error" id="error-nombre"></span>
+    </div>
+
+    <div>
+      <label for="codigo">Código de socio:</label>
+      <input type="text" id="codigo" name="codigo" placeholder="AB-1234">
+      <span class="error" id="error-codigo"></span>
+    </div>
+
+    <fieldset>
+      <legend>Tipo de plan</legend>
+      <label><input type="radio" name="plan" value="mensual" checked> Mensual</label>
+      <label><input type="radio" name="plan" value="trimestral"> Trimestral</label>
+      <label><input type="radio" name="plan" value="semestral"> Semestral</label>
+      <label><input type="radio" name="plan" value="anual"> Anual</label>
+    </fieldset>
+
+    <p>Precio: <strong id="precio">30 €</strong></p>
+
+    <fieldset>
+      <legend>Actividades</legend>
+      <p id="info-actividades"></p>
+      <div id="actividades">
+        <!-- Ejemplo de cómo debe quedar cada actividad -->
+      </div>
+      <span class="error" id="error-actividades"></span>
+    </fieldset>
+
+    <button type="submit">Inscribirse</button>
+  </form>
+   <h2>Historial de inscripciones</h2>
+  <ul id="historial"></ul>
+  <button type="button" id="borrar-historial">Borrar historial</button>
+
+  
+  <script src="actividades.js"></script>
+  <script src="script.js"></script>
+</body>
+</html>
