@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Gestor de tareas</title>
+  <style>
+    body { font-family: sans-serif; max-width: 640px; margin: 2rem auto; padding: 0 1rem; }
+    fieldset { margin-bottom: 1rem; }
+    .campo { margin-bottom: .6rem; }
+    label { display: block; font-weight: bold; }
+    ul { padding-left: 1.2rem; }
+    li { margin-bottom: .4rem; }
+    li span { cursor: pointer; }
+    li button { margin-left: .5rem; }
+    .completada { text-decoration: line-through; color: gray; }
+    .ALTA span { color: crimson; }
+    .MEDIA span { color: darkorange; }
+    .BAJA span { color: seagreen; }
+  </style>
+</head>
+<body>
+  <h1>Gestor de tareas</h1>
+
+  <form id="formulario" novalidate>
+    <fieldset>
+      <legend>Nueva tarea</legend>
+
+      <div class="campo">
+        <label for="titulo">Título</label>
+        <input type="text" id="titulo" name="titulo" required aria-describedby="mensaje">
+      </div>
+
+      <div class="campo">
+        <label for="tipo">Tipo de tarea</label>
+        <select id="tipo" name="tipo">
+          <option value="normal">Normal</option>
+          <option value="urgente">Urgente</option>
+          <option value="recordatorio">Recordatorio</option>
+        </select>
+      </div>
+
+      <div class="campo">
+        <label for="prioridad">Prioridad (solo urgentes)</label>
+        <select id="prioridad" name="prioridad">
+          <option value="ALTA">ALTA</option>
+          <option value="MEDIA">MEDIA</option>
+          <option value="BAJA">BAJA</option>
+        </select>
+      </div>
+
+      <div class="campo">
+        <label for="descripcion">Descripción (solo recordatorios)</label>
+        <input type="text" id="descripcion" name="descripcion">
+      </div>
+
+      <button type="submit">Añadir tarea</button>
+      <!-- Zona de mensajes accesible: los lectores de pantalla la anuncian -->
+      <p id="mensaje" role="alert" aria-live="polite"></p>
+    </fieldset>
+  </form>
+
+  <button type="button" id="refrescar">Refrescar panel</button>
+
+  <h2>Mis tareas</h2>
+  <ul id="lista-tareas"></ul>
+
+  <script src="tareas.js"></script>
+</body>
+</html>

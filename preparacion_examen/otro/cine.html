@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Reserva de entradas</title>
+  <style>
+    body { font-family: sans-serif; max-width: 680px; margin: 2rem auto; padding: 0 1rem; }
+    .campo { margin-bottom: .8rem; }
+    label { font-weight: bold; display: block; }
+    .opcion { font-weight: normal; display: inline-block; margin-right: .8rem; }
+    .error { color: crimson; font-size: .85rem; display: block; min-height: 1.1rem; }
+    fieldset { margin-bottom: .8rem; }
+    #precio-total { font-size: 1.2rem; font-weight: bold; }
+    li { margin-bottom: .4rem; }
+    li.vip { color: goldenrod; font-weight: bold; }
+    li button { margin-left: .5rem; }
+  </style>
+</head>
+<body>
+  <h1>Reserva de entradas de cine</h1>
+
+  <form id="formulario" novalidate>
+    <div class="campo">
+      <label for="nombre">Nombre completo</label>
+      <input type="text" id="nombre" name="nombre" required>
+      <span class="error" id="error-nombre"></span>
+    </div>
+
+    <div class="campo">
+      <label for="email">Correo electrónico</label>
+      <input type="email" id="email" name="email" required>
+      <span class="error" id="error-email"></span>
+    </div>
+
+    <div class="campo">
+      <label for="email2">Repite el correo</label>
+      <input type="email" id="email2" name="email2" required>
+      <span class="error" id="error-email2"></span>
+    </div>
+
+    <div class="campo">
+      <label for="dni">DNI</label>
+      <input type="text" id="dni" name="dni" placeholder="12345678-A" required>
+      <span class="error" id="error-dni"></span>
+    </div>
+
+    <div class="campo">
+      <label for="pelicula">Película</label>
+      <select id="pelicula" name="pelicula" required>
+        <option value="">-- Elige una película --</option>
+        <!-- Aquí van las películas de peliculas.js -->
+      </select>
+      <span class="error" id="error-pelicula"></span>
+    </div>
+
+    <fieldset>
+      <legend>Sesión</legend>
+      <div id="sesiones">
+        <!-- Ejemplo de cómo debe quedar cada sesión (se generan según la película) -->
+        <label class="opcion"><input type="radio" name="sesion" value="18:00"> 18:00</label>
+      </div>
+      <span class="error" id="error-sesion"></span>
+    </fieldset>
+
+    <div class="campo">
+      <label for="entradas">Número de entradas</label>
+      <input type="number" id="entradas" name="entradas" min="1" max="6" step="1" value="1" required>
+      <span class="error" id="error-entradas"></span>
+    </div>
+
+    <div class="campo">
+      <label for="extras">Extras (Ctrl + clic para elegir varios)</label>
+      <select id="extras" name="extras" multiple size="5">
+        <!-- Aquí van los extras de peliculas.js -->
+        <option value="ejemplo">Ejemplo de extra (+1,00 €)</option>
+      </select>
+      <span class="error" id="error-extras"></span>
+    </div>
+
+    <div class="campo">
+      <label class="opcion"><input type="checkbox" id="vip" name="vip"> Butaca VIP (+5 € por entrada)</label>
+    </div>
+
+    <p>Total: <span id="precio-total">0,00 €</span></p>
+
+    <button type="submit">Reservar</button>
+    <p id="mensaje" role="status" aria-live="polite"></p>
+  </form>
+
+  <h2>Mis reservas</h2>
+  <ul id="reservas"></ul>
+  <button type="button" id="vaciar">Vaciar reservas</button>
+
+  <script src="peliculas.js"></script>
+  <script src="cine.js"></script>
+</body>
+</html>
